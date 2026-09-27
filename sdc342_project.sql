@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 13, 2026 at 04:03 PM
+-- Generation Time: Sep 27, 2026 at 06:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -122,6 +122,26 @@ INSERT INTO `products_services` (`product_service_id`, `name`, `description`) VA
 (4, 'Network Setup', 'Installation and configuration of home or business networks'),
 (5, 'Software Support', 'Installation, configuration, and troubleshooting of software');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `UserID` int(11) NOT NULL,
+  `Email` varchar(100) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `UserLevel` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`UserID`, `Email`, `Password`, `UserLevel`) VALUES
+(1, 'admin@test.com', 'admin123', 1);
+
 --
 -- Indexes for dumped tables
 --
@@ -164,6 +184,13 @@ ALTER TABLE `products_services`
   ADD PRIMARY KEY (`product_service_id`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`UserID`),
+  ADD UNIQUE KEY `Email` (`Email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -196,6 +223,12 @@ ALTER TABLE `employees`
 --
 ALTER TABLE `products_services`
   MODIFY `product_service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

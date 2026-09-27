@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 // SDC342L Project - Main application page.
 
 // Load the database connection.
@@ -9,6 +11,9 @@ require_once('config/database.php');
 require_once('controller/CustomerController.php');
 require_once('controller/ComplaintController.php');
 require_once('controller/TechnicianController.php');
+
+// Week 4 Site Security - Load authentication controller.
+require_once('controller/UserController.php');
 
 ?>
 
@@ -33,15 +38,15 @@ require_once('controller/TechnicianController.php');
 
         <ul>
             <li><a href="#">Register Account</a></li>
-            <li><a href="#">Customer Login</a></li>
+            <li><a href="login.php">Customer Login</a></li>
             <li><a href="#">Submit Complaint</a></li>
         </ul>
 
         <h2>Employee</h2>
 
         <ul>
-            <li><a href="#">Technician Login</a></li>
-            <li><a href="#">Administrator Login</a></li>
+            <li><a href="login.php">Technician Login</a></li>
+            <li><a href="login.php">Administrator Login</a></li>
         </ul>
 
     </div>
