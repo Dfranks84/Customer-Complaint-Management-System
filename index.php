@@ -37,7 +37,7 @@ require_once('controller/UserController.php');
         <h2>Customer</h2>
 
         <ul>
-            <li><a href="#">Register Account</a></li>
+            <li><a href="register.php">Register Account</a></li>
             <li><a href="login.php">Customer Login</a></li>
             <li><a href="#">Submit Complaint</a></li>
         </ul>

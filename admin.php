@@ -36,10 +36,29 @@ Security::checkAuthority('admin');
         <h3>Administrator Options</h3>
 
         <ul>
-            <li><a href="#">View Customers</a></li>
-            <li><a href="#">View Complaints</a></li>
-            <li><a href="#">Manage Employees</a></li>
-            <li><a href="#">Manage Products and Services</a></li>
+            <li>
+                <a href="manage_customers.php">
+                    View Customers
+                </a>
+            </li>
+
+            <li>
+                <a href="manage_complaints.php">
+                    View Complaints
+                </a>
+            </li>
+
+            <li>
+                <a href="manage_employees.php">
+                    Manage Employees
+                </a>
+            </li>
+
+            <li>
+                <a href="manage_products.php">
+                    Manage Products and Services
+                </a>
+            </li>
         </ul>
 
         <p>

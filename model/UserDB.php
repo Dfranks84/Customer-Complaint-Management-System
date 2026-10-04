@@ -9,6 +9,7 @@ require_once __DIR__ . '/User.php';
  */
 class UserDB
 {
+    // Get a user by e-mail address.
     public static function getUserByEmail($email)
     {
         $conn = Database::connect();
@@ -39,5 +40,38 @@ class UserDB
         }
 
         return null;
+    }
+
+    // Create a new application user.
+    public static function createUser(User $user)
+    {
+        $conn = Database::connect();
+
+        $query = "INSERT INTO users
+                  (Email, Password, UserLevel)
+                  VALUES (?, ?, ?)";
+
+        $statement = $conn->prepare($query);
+
+        $email = $user->getEmail();
+        $password = $user->getPassword();
+        $userLevel = $user->getUserLevel();
+
+        $statement->bind_param(
+            "ssi",
+            $email,
+            $password,
+            $userLevel
+        );
+
+        $result = $statement->execute();
+
+        if ($result) {
+            $user->setUserId($conn->insert_id);
+        }
+
+        $statement->close();
+
+        return $result;
     }
 }

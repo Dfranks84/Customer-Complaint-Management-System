@@ -5,7 +5,7 @@ require_once __DIR__ . '/../model/Technician.php';
 
 /**
  * Technician Controller
- * Handles CRUD operations for technician employees.
+ * Handles CRUD operations for employees.
  */
 class TechnicianController
 {
@@ -16,7 +16,7 @@ class TechnicianController
         $this->conn = Database::connect();
     }
 
-    // CREATE - Add a new technician employee.
+    // CREATE - Add a new employee.
     public function createTechnician(Technician $technician)
     {
         $sql = "INSERT INTO employees
@@ -48,6 +48,19 @@ class TechnicianController
         return $stmt->execute();
     }
 
+    // READ - Get one employee by employee ID.
+    public function getEmployeeByID($employeeID)
+    {
+        $sql = "SELECT * FROM employees
+                WHERE employee_id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $employeeID);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     // READ - Get one technician by employee ID.
     public function getTechnicianByID($employeeID)
     {
@@ -62,6 +75,17 @@ class TechnicianController
         return $stmt->get_result()->fetch_assoc();
     }
 
+    // READ - Get all employees.
+    public function getAllEmployees()
+    {
+        $sql = "SELECT * FROM employees
+                ORDER BY last_name, first_name";
+
+        $result = $this->conn->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     // READ - Get all technicians.
     public function getAllTechnicians()
     {
@@ -74,12 +98,12 @@ class TechnicianController
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // UPDATE - Update an existing technician.
+    // UPDATE - Update an existing employee.
+    // User ID is add-only and cannot be changed.
     public function updateTechnician(Technician $technician)
     {
         $sql = "UPDATE employees
-                SET user_id = ?,
-                    first_name = ?,
+                SET first_name = ?,
                     last_name = ?,
                     email = ?,
                     phone_extension = ?,
@@ -89,7 +113,6 @@ class TechnicianController
 
         $stmt = $this->conn->prepare($sql);
 
-        $userID = $technician->getUserID();
         $firstName = $technician->getFirstName();
         $lastName = $technician->getLastName();
         $email = $technician->getEmail();
@@ -99,8 +122,7 @@ class TechnicianController
         $employeeID = $technician->getEmployeeID();
 
         $stmt->bind_param(
-            "sssssssi",
-            $userID,
+            "ssssssi",
             $firstName,
             $lastName,
             $email,

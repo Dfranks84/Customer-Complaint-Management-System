@@ -1,32 +1,32 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 session_start();
 
 require_once('controller/UserController.php');
+require_once('model/Database.php');
 
 $error_message = '';
 
 // Process the login form.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $email = trim($_POST['email'] ?? '');
+    $loginID = trim($_POST['login_id'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if ($email === '' || $password === '') {
+    if ($loginID === '' || $password === '') {
 
-        $error_message = 'Please enter your email and password.';
+        $error_message =
+            'Please enter your Email/User ID and password.';
 
     } else {
 
-        if (UserController::login($email, $password)) {
+        // First try the regular users table.
+        if (UserController::login($loginID, $password)) {
 
-            // Send the user to the appropriate page
-            // based on authorization level.
             if ($_SESSION['admin']) {
                 header('Location: admin.php');
-                exit();
-            } elseif ($_SESSION['technician']) {
-                header('Location: technician.php');
                 exit();
             } elseif ($_SESSION['customer']) {
                 header('Location: customer.php');
@@ -35,7 +35,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            $error_message = 'Invalid email or password.';
+            // If regular login fails, check for a technician
+            // using User ID and password.
+            $conn = Database::connect();
+
+            $sql = "SELECT employee_id, user_id, email, password
+                    FROM employees
+                    WHERE user_id = ?
+                    AND level = 'Technician'";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $loginID);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $technician = $result->fetch_assoc();
+
+            $stmt->close();
+
+            if (
+                $technician &&
+                password_verify(
+                    $password,
+                    $technician['password']
+                )
+            ) {
+
+                $_SESSION['user_id'] =
+                    $technician['user_id'];
+
+                $_SESSION['employee_id'] =
+                    $technician['employee_id'];
+
+                $_SESSION['email'] =
+                    $technician['email'];
+
+                $_SESSION['user_level'] = 3;
+
+                $_SESSION['admin'] = false;
+                $_SESSION['customer'] = false;
+                $_SESSION['technician'] = true;
+
+                header('Location: technician.php');
+                exit();
+
+            } else {
+
+                $error_message =
+                    'Invalid Email/User ID or password.';
+            }
         }
     }
 }
@@ -61,7 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <?php if ($error_message !== ''): ?>
 
-            <p><?php echo htmlspecialchars($error_message); ?></p>
+            <p>
+                <?php echo htmlspecialchars($error_message); ?>
+            </p>
 
         <?php endif; ?>
 
@@ -69,7 +119,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <p>
                 <?php
-                echo htmlspecialchars($_SESSION['logout_msg']);
+                echo htmlspecialchars(
+                    $_SESSION['logout_msg']
+                );
+
                 unset($_SESSION['logout_msg']);
                 ?>
             </p>
@@ -79,17 +132,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="post" action="login.php">
 
             <p>
-                <label for="email">Email:</label><br>
+                <label for="login_id">
+                    Email/User ID:
+                </label><br>
+
                 <input
-                    type="email"
-                    id="email"
-                    name="email"
+                    type="text"
+                    id="login_id"
+                    name="login_id"
                     required
                 >
             </p>
 
             <p>
-                <label for="password">Password:</label><br>
+                <label for="password">
+                    Password:
+                </label><br>
+
                 <input
                     type="password"
                     id="password"
@@ -99,13 +158,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </p>
 
             <p>
-                <button type="submit">Login</button>
+                <button type="submit">
+                    Login
+                </button>
             </p>
 
         </form>
 
         <p>
-            <a href="index.php">Return to Home</a>
+            <a href="index.php">
+                Return to Home
+            </a>
         </p>
 
     </div>

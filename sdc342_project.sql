@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 27, 2026 at 06:02 AM
+-- Generation Time: Oct 04, 2026 at 07:04 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,6 +41,14 @@ CREATE TABLE `complaints` (
   `resolution_date` date DEFAULT NULL,
   `resolution_notes` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `complaints`
+--
+
+INSERT INTO `complaints` (`complaint_id`, `customer_id`, `product_service_id`, `complaint_type_id`, `technician_id`, `complaint_description`, `image_path`, `technician_notes`, `status`, `date_created`, `resolution_date`, `resolution_notes`) VALUES
+(1, 1, 1, 1, 1, 'Computer will not start after the repair service.', 'images/uploads/complaint_1791059782_5e4493b9.png', 'Diagnosed the computer and corrected the startup issue.', 'Closed', '2026-10-03 16:36:22', '2026-10-03', 'Computer was repaired and tested successfully.'),
+(2, 2, 1, 2, 1, 'Testing invalid image file upload.', 'images/uploads/complaint_1791088488_ee755e55.png', 'Reviewed the customer complaint and tested the reported issue.', 'Closed', '2026-10-04 00:34:48', '2026-10-04', 'Issue was resolved and the repair was verified successfully.');
 
 -- --------------------------------------------------------
 
@@ -82,6 +90,14 @@ CREATE TABLE `customers` (
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`customer_id`, `email`, `first_name`, `last_name`, `street_address`, `city`, `state`, `zip_code`, `phone_number`, `password`) VALUES
+(1, 'customer@test.com', 'Test', 'Customer', '123 Main Street', 'Hopewell', 'VA', '23860', '804-555-6789', 'Customer123'),
+(2, 'customer2@test.com', 'Test', 'Customer', '456 Main Street', 'Hopewell', 'VA', '23860', '804-555-1234', 'Customer123');
+
 -- --------------------------------------------------------
 
 --
@@ -98,6 +114,14 @@ CREATE TABLE `employees` (
   `level` enum('Administrator','Technician') NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `employees`
+--
+
+INSERT INTO `employees` (`employee_id`, `user_id`, `first_name`, `last_name`, `email`, `phone_extension`, `level`, `password`) VALUES
+(1, 'tech001', 'Test', 'Technician', 'tech@test.com', '102', 'Technician', '$2y$10$GcAMVFp17BRSSrqUAQVKT.aHK6rPZAmcXOvjqxRKZD5wn9eyQaHNO'),
+(2, 'admin002', 'Test', 'Administrator', 'admin2@test.com', '202', 'Administrator', 'Admin1234');
 
 -- --------------------------------------------------------
 
@@ -140,7 +164,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`UserID`, `Email`, `Password`, `UserLevel`) VALUES
-(1, 'admin@test.com', 'admin123', 1);
+(1, 'admin@test.com', 'admin123', 1),
+(2, 'customer@test.com', 'Customer123', 2),
+(3, 'tech@test.com', 'Tech1234', 3),
+(4, 'admin2@test.com', 'Admin1234', 1),
+(5, 'customer2@test.com', 'Customer123', 2);
 
 --
 -- Indexes for dumped tables
@@ -198,7 +226,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `complaints`
 --
 ALTER TABLE `complaints`
-  MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `complaint_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `complaint_types`
@@ -210,19 +238,25 @@ ALTER TABLE `complaint_types`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products_services`
 --
 ALTER TABLE `products_services`
-  MODIFY `product_service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `product_service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
